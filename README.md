@@ -24,7 +24,7 @@ A meme that captures how I currently feel about my university studies is ![](htt
 4. *Ultra Zero*
 5. *Ultra Fiesta*
 
-If you want, you can even make your own ![tierlist](https://www.monsterenergy.com/en-nz/)
+If you want, you can even make your own [tierlist](https://tiermaker.com/create/monster-energy-flavour-tier-list-jan-2023-1145126)
 
 ![](https://media1.tenor.com/m/NfSy4OGyV-IAAAAC/vergil-devil-may-cry.gif)
 
