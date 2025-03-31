@@ -1,0 +1,133 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: Sans-Serif;
+  text-align: center;
+}
+
+```
+
+## **MONSTER ENERGY STATS**
+
+### STATS FOR EACH LOCATION TYPE THAT SELLS MONSTER ENERGY
+
+![](monsterlogo.gif)
+
+**This Dynamic Report aims to present:**
+
+The average number of Monster options available at each location type and the average median price of Monster at each location type.
+
+```{r}
+# Setup Block
+library(tidyverse)
+
+logged_data <- read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vSqE4XSoGN66PMZEfrFWhcQkA8tGFr_0EAdgadV7Nbz0UgBFgYETdWJmQT9wZSKP_E7cAsewDCyxkNi/pub?output=csv')
+
+latest_data <- rename(logged_data,
+                      location_Category = 2,
+                      location = 3,
+                      monster_sold = 4,
+                      quantity = 5,
+                      price = 6
+                      )
+
+```
+
+### ______________________________________________________
+
+### ASSESSMENT OF MONSTER ENERGY RANGE ACROSS AUCKLAND NZ
+
+
+
+The following is the average number of options available at each location type that sold Monster Energy.
+
+```{r}
+# Number of Options per Location Type:
+
+# Setup Averages for Number of Options:
+average_quantity_dc <- filter(latest_data, location_Category == "Dairy / Convenience Store")
+dc_mean <- mean(average_quantity_dc$quantity, na.rm = TRUE)
+
+average_quantity_sg <- filter(latest_data, location_Category == "Supermarket / Grocer")
+sg_mean <- mean(average_quantity_sg$quantity, na.rm = TRUE)
+
+average_quantity_ff <- filter(latest_data, location_Category == "Fast Food")
+ff_mean <- mean(average_quantity_ff$quantity, na.rm = TRUE)
+
+average_quantity_ce <- filter(latest_data, location_Category == "Café / Eat-in")
+ce_mean <- mean(average_quantity_ce$quantity, na.rm = TRUE)
+
+# Create New Dataframe:
+average_means_quantity <- c(dc_mean, sg_mean, ff_mean, ce_mean)
+lc_vector <- c("Dairy / Convenience Store", "Supermarket / Grocer", "Fast Food", "Café / Eat-in")
+new_lc_q <- tibble(location_Category = lc_vector,
+                   quantity = average_means_quantity)
+
+# Setup Overall Mean:
+mean_quantity = round(mean(latest_data$quantity, na.rm = TRUE))
+
+# Present Data:
+ggplot(data = new_lc_q) + 
+  geom_bar(aes(x = location_Category, y = quantity),
+           stat = "identity",
+           na.rm = TRUE) + 
+  labs(title = "Average Number of Monster Energy options at observed locations",
+       x = "Location Types",
+       y = "Average Number of Options")
+
+
+```
+
+Of all surveyed locations that sold Monster Energy, there was on average `r mean_quantity` options available.
+
+### _____________________________________________________
+
+### ASSESSMENT OF MONSTER ENERGY PRICE ACROSS AUCKLAND NZ
+
+
+The following is the average median price of Monster at each location type that sold Monster Energy.
+
+```{r}
+# Price per Location type:
+
+# Calculate Average median Prices:
+dc_price_mean <- round(mean(average_quantity_dc$price, na.rm = TRUE), 2)
+
+sg_price_mean <- round(mean(average_quantity_sg$price, na.rm = TRUE), 2)
+
+ff_price_mean <- round(mean(average_quantity_ff$price, na.rm = TRUE), 2)
+
+ce_price_mean <- round(mean(average_quantity_ce$price, na.rm = TRUE), 2)
+
+# Create New Dataframe:
+average_means_price <- c(dc_price_mean, sg_price_mean, ff_price_mean, ce_price_mean)
+new_lc_p <- tibble(location_Category = lc_vector,
+                   price = average_means_price)
+
+# Setup Overall Mean:
+mean_price = round(mean(latest_data$price, na.rm = TRUE),2)
+
+# Present Data:
+ggplot(data = new_lc_p) + 
+  geom_bar(aes(x = location_Category, y = price),
+           stat = "identity",
+           na.rm = TRUE) + 
+  labs(title = "Summed median Price of Monster at Monster Energy Locations",
+       x = "Location Types",
+       y = "median price")
+
+```
+
+Of all surveyed locations that sold Monster Energy, the average price of Monster Energy when not accounting for location type was $`r mean_price`
